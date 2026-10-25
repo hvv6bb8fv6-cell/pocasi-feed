@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7e8e6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Můj VIP Feed">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Můj VIP Feed & Počasí</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23ffe4a7'/%3E%3Cstop offset='1' stop-color='%23efb9d0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='42' fill='url(%23g)'/%3E%3Ccircle cx='58' cy='56' r='22' fill='%23fff9df'/%3E%3Cpath d='M58 20v-8M58 92v-8M22 56h-8M102 56h-8M33 31l-6-6M83 81l-6-6M83 31l6-6M33 81l-6 6' stroke='%23fff9df' stroke-width='5' stroke-linecap='round'/%3E%3Crect x='35' y='88' width='110' height='67' rx='15' fill='%23fffaf7' stroke='%23b99cc7' stroke-width='5'/%3E%3Crect x='45' y='98' width='90' height='47' rx='8' fill='%23b5c8e8'/%3E%3Cpath d='M62 129c-10 0-12-15-2-19 4-13 24-11 27 1 12-4 20 6 16 14z' fill='%23fffaf7'/%3E%3Ccircle cx='119' cy='133' r='4' fill='%23f3a7b5'/%3E%3C/svg%3E">
+<style>
+:root{--ink:#413d50;--muted:#858094;--card:rgba(255,255,255,.78);--line:rgba(91,77,116,.12);--accent:#9d87c5;--pink:#e8aebe;--shadow:0 14px 38px rgba(91,77,116,.10)}
+*{box-sizing:border-box}html{min-height:100%;background:#f7e8e6}body{margin:0;color:var(--ink);font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(145deg,#fff2e0 0%,#f8e5ed 52%,#e9e9fb 100%);min-height:100vh;overflow-x:hidden;transition:background 1.2s ease}
+body.weather-sun{background:linear-gradient(145deg,#fff0c9,#ffddb8 48%,#f5d7e6)}body.weather-rain{background:linear-gradient(145deg,#dce8f3,#cbd5e7 48%,#e4dff0)}body.weather-snow{background:linear-gradient(145deg,#eaf4fb,#dce8f3 52%,#eee5f4)}body.weather-cloud{background:linear-gradient(145deg,#f4e9ec,#e1e5f0 55%,#eee5f4)}
+button,input{font:inherit}button{cursor:pointer;border:0}button:focus-visible,input:focus-visible{outline:3px solid #aa95d5;outline-offset:2px}
+body.dark-mode{--ink:#f0edf7;--muted:#b4aec4;--card:rgba(38,35,54,.82);--line:rgba(226,215,246,.14);--accent:#b7a2e2;--pink:#d69db8;--shadow:0 14px 38px rgba(0,0,0,.20);background:linear-gradient(145deg,#191b2a 0%,#242136 52%,#29243a 100%)}
+body.dark-mode.weather-sun{background:linear-gradient(145deg,#302638,#3d2c38 48%,#29243a)}
+body.dark-mode.weather-rain{background:linear-gradient(145deg,#171f2e,#20283a 48%,#29243a)}
+body.dark-mode.weather-snow{background:linear-gradient(145deg,#1b2635,#252b3d 52%,#29243a)}
+body.dark-mode.weather-cloud{background:linear-gradient(145deg,#211f30,#25283a 55%,#29243a)}
+body.dark-mode .weather-card{background:linear-gradient(130deg,#29263bd9,#29263b99);border-color:#ffffff16}
+body.dark-mode .weather-stat,body.dark-mode .video-card,body.dark-mode .creator,body.dark-mode .panel{background:var(--card);border-color:#ffffff12}
+body.dark-mode .icon-btn,body.dark-mode .city-edit,body.dark-mode .city-input,body.dark-mode .field{background:#ffffff0c;color:var(--ink);border-color:var(--line)}
+body.dark-mode .section-title .emoji{background:#ffffff0c}
+body.dark-mode .add-btn{background:#ffffff12;color:#d5c7f2}
+body.dark-mode .remove-creator{background:#353044;color:#d2c5e5}
+body.dark-mode .avatar{box-shadow:inset 0 0 0 3px #ffffff40,0 6px 12px #0002}
+body.dark-mode .tiktok-go{background:#f1edf7;color:#272333}
+body.dark-mode .sun-glow{opacity:.25}
+.app{max-width:760px;margin:auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(34px + env(safe-area-inset-bottom));position:relative;z-index:1}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 2px 18px}.brand{display:flex;align-items:center;gap:11px}.brand-icon{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#ffe7a9,#e9b5d0);display:grid;place-items:center;box-shadow:0 7px 18px #c69fc44a;font-size:24px}.eyebrow{font-size:10px;letter-spacing:.17em;text-transform:uppercase;color:var(--muted);font-weight:800}.brand h1{font-size:18px;line-height:1.15;margin:3px 0 0;letter-spacing:-.04em}.top-actions{display:flex;gap:8px}.icon-btn{width:40px;height:40px;border-radius:14px;background:#ffffffa8;color:var(--ink);box-shadow:0 4px 14px #786b8510;font-size:17px}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 17px;padding:6px;border-radius:19px;background:#ffffff78;border:1px solid #ffffffa0;box-shadow:0 6px 20px #786b8508;backdrop-filter:blur(14px)}
+.tab-btn{display:flex;align-items:center;justify-content:center;gap:7px;min-width:0;padding:11px 5px;border-radius:14px;background:transparent;color:var(--muted);font-size:12px;font-weight:750;transition:background .2s,color .2s,transform .2s}
+.tab-btn svg{width:18px;height:18px;flex:none;stroke:currentColor}
+.tab-btn.active{background:#fff;color:#756294;box-shadow:0 4px 12px #5f4c7818}
+body.dark-mode .tabs{background:#ffffff09;border-color:#ffffff10}
+body.dark-mode .tab-btn.active{background:#39334d;color:#e3d7fb;box-shadow:0 4px 12px #0002}
+.tab-panel{animation:panelIn .28s ease both}.tab-panel[hidden]{display:none!important}
+@keyframes panelIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.weather-card{position:relative;overflow:hidden;border:1px solid #ffffffa8;background:linear-gradient(130deg,#ffffffc9,#ffffff70);border-radius:29px;padding:22px 21px 19px;box-shadow:var(--shadow);backdrop-filter:blur(16px);margin-bottom:17px}.weather-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.weather-label{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:800}.city-line{display:flex;align-items:center;gap:7px;margin-top:5px}.city-line h2{font-size:21px;margin:0;letter-spacing:-.04em}.city-edit{background:#ffffffb5;color:var(--ink);border-radius:10px;padding:6px 9px;font-size:12px}.weather-main{display:flex;align-items:center;justify-content:space-between;margin-top:16px}.temp{font-size:64px;letter-spacing:-.08em;font-weight:750;line-height:1}.condition{font-size:14px;font-weight:650;margin-top:7px}.feels{font-size:12px;color:var(--muted);margin-top:4px}.weather-art{font-size:75px;color:#8f83b8;filter:drop-shadow(0 10px 9px #756b7430);animation:float 4s ease-in-out infinite}.weather-art svg{display:block;overflow:visible}.weather-sun .weather-art{animation:spinSun 24s linear infinite}.weather-details{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:19px}.weather-stat{background:#ffffff80;border:1px solid #ffffffa0;border-radius:15px;padding:10px 11px}.weather-stat span{display:block;font-size:10px;color:var(--muted);margin-bottom:5px}.weather-stat strong{font-size:13px}.weather-bottom{display:flex;gap:8px;align-items:center;margin-top:14px}.city-input{min-width:0;flex:1;border:1px solid var(--line);border-radius:13px;background:#ffffffb8;padding:11px 12px;color:var(--ink)}.soft-btn{border-radius:13px;padding:11px 14px;background:#8e7bb9;color:white;font-weight:750;font-size:12px;box-shadow:0 5px 12px #8e7bb930}.status{font-size:11px;color:var(--muted);margin-top:9px;min-height:14px}
+.section{margin-top:22px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 3px 12px}.section-title{display:flex;align-items:center;gap:9px}.section-title .emoji{width:37px;height:37px;display:grid;place-items:center;border-radius:13px;background:#ffffff9c;font-size:18px}.section-title h2{font-size:17px;margin:0;letter-spacing:-.04em}.section-title p{font-size:11px;color:var(--muted);margin:3px 0 0}.add-btn{width:39px;height:39px;border-radius:14px;background:#fff9;color:#6c5a91;font-size:25px;line-height:1;box-shadow:0 5px 16px #786b8510;transition:transform .2s}.add-btn:active{transform:scale(.9)}
+.panel{background:var(--card);border:1px solid #ffffffbd;border-radius:24px;padding:14px;box-shadow:var(--shadow);backdrop-filter:blur(14px)}.form-row{display:flex;gap:8px;margin-bottom:10px}.form-row:last-child{margin-bottom:0}.field{width:100%;min-width:0;border:1px solid var(--line);border-radius:13px;padding:12px 13px;background:#fff9;color:var(--ink);font-size:13px}.field::placeholder{color:#aaa4b4}.helper{font-size:11px;line-height:1.5;color:var(--muted);margin:8px 2px 0}.hidden{display:none!important}
+.video-list{display:grid;gap:11px}.video-card{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:center;padding:9px;border-radius:18px;background:#ffffff9c;border:1px solid #ffffffb5;transition:transform .2s,box-shadow .2s}.video-card:active{transform:scale(.985)}.thumb-wrap{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#ded4f0,#f3d7df)}.thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block}.play{position:absolute;right:7px;bottom:7px;width:29px;height:29px;display:grid;place-items:center;border-radius:10px;background:#ffffffed;color:#b94d68;font-size:13px;box-shadow:0 3px 10px #44304c30}.video-title{font-size:13px;line-height:1.35;font-weight:750;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.video-meta{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.35}.video-actions{display:flex;align-items:center;gap:8px;margin-top:8px}.tiny-link{font-size:11px;color:#816da9;text-decoration:none;font-weight:800}.remove{font-size:11px;color:#b38b9c;background:transparent;padding:4px}
+.empty{text-align:center;padding:23px 14px;color:var(--muted)}.empty .empty-icon{font-size:30px;margin-bottom:8px}.empty strong{display:block;color:var(--ink);font-size:13px;margin-bottom:5px}.empty p{font-size:11px;line-height:1.5;margin:0}
+.creator-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.creator{position:relative;text-align:center;background:#ffffff9c;border:1px solid #ffffffc4;border-radius:19px;padding:15px 8px 12px;min-width:0;box-shadow:0 6px 18px #786b8508;animation:pop .35s ease both}.avatar{width:61px;height:61px;border-radius:50%;display:grid;place-items:center;margin:0 auto 9px;color:#fff;font-size:22px;font-weight:800;box-shadow:inset 0 0 0 3px #ffffff80,0 6px 12px #77637b1f}.creator-name{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.creator-handle{font-size:10px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tiktok-go{display:inline-flex;align-items:center;justify-content:center;gap:5px;margin-top:10px;padding:7px 9px;border-radius:10px;background:#26232d;color:white;text-decoration:none;font-size:10px;font-weight:800}.tiktok-go span{font-size:14px}.remove-creator{position:absolute;top:5px;right:6px;border-radius:8px;background:#ffffffc9;color:#9e8b9d;font-size:12px;width:23px;height:23px}
+.footer{text-align:center;color:#9b93a5;font-size:10px;margin-top:25px;padding:0 10px;line-height:1.6}.toast{position:fixed;z-index:10;bottom:calc(22px + env(safe-area-inset-bottom));left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#413d50;color:white;padding:11px 16px;border-radius:14px;font-size:12px;box-shadow:0 8px 25px #413d5040;transition:.25s;max-width:calc(100vw - 30px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
+.weather-effects{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}.drop{position:absolute;top:-35px;width:2px;height:22px;background:linear-gradient(transparent,#8ca9d8a8);border-radius:2px;animation:rainfall linear infinite}.flake{position:absolute;top:-25px;color:#fff;opacity:.8;text-shadow:0 1px 5px #9fb6d6;animation:snowfall linear infinite}.sun-glow{position:absolute;top:-120px;right:-100px;width:310px;height:310px;border-radius:50%;background:#ffdc8c70;filter:blur(20px);animation:glow 5s ease-in-out infinite alternate}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}@keyframes spinSun{to{transform:rotate(360deg)}}@keyframes rainfall{to{transform:translate3d(-45px,110vh,0)}}@keyframes snowfall{to{transform:translate3d(40px,110vh,0) rotate(300deg)}}@keyframes glow{to{transform:scale(1.12);opacity:.7}}@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(min-width:600px){.app{padding-left:24px;padding-right:24px}.weather-card{padding:27px}.video-card{grid-template-columns:155px minmax(0,1fr)}.creator-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body class="weather-cloud">
+<div class="weather-effects" id="weatherEffects" aria-hidden="true"><div class="sun-glow hidden" id="sunGlow"></div></div>
+<main class="app">
+<header class="topbar">
+  <div class="brand"><div class="brand-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><rect x="5" y="17" width="38" height="25" rx="7" fill="#fffaf7" stroke="#9d87c5" stroke-width="2.2"/><rect x="9" y="21" width="30" height="17" rx="4" fill="#b9c8e9"/><path d="M17 32c-4 0-5-5-1-7 2-5 9-4 10 1 5-2 8 3 5 6z" fill="#fff"/><circle cx="34" cy="34" r="1.8" fill="#e8aebe"/><circle cx="17" cy="12" r="7" fill="#fff6d7"/><path d="M17 2v3M17 19v3M7 12H4M30 12h-3M10 5 8 3M24 19l-2-2M24 5l2-2" stroke="#fff6d7" stroke-width="2" stroke-linecap="round"/></svg></div><div><div class="eyebrow">tvůj osobní koutek</div><h1>Můj VIP Feed & Počasí</h1></div></div>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeToggle" aria-label="Přepnout světlý a tmavý režim" title="Tmavý režim"><svg id="themeIcon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.7 8.7 0 1 0 20.5 14.2Z"/></svg></button>
+    <button class="icon-btn" id="refreshAll" aria-label="Obnovit feed a počasí" title="Obnovit"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3"/></svg></button>
+  </div>
+</header>
+<nav class="tabs" role="tablist" aria-label="Hlavní sekce">
+  <button class="tab-btn active" id="tabWeather" role="tab" aria-selected="true" aria-controls="weatherSection" data-tab="weatherSection"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3.5"/><path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.4 3.4l.7.7M11.9 11.9l.7.7M15 17.5a4 4 0 0 0-7.8-1.2A3.2 3.2 0 0 0 8 22h7a2.5 2.5 0 0 0 0-5z"/></svg><span>Počasí</span></button>
+  <button class="tab-btn" id="tabYoutube" role="tab" aria-selected="false" aria-controls="youtubeSection" data-tab="youtubeSection"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="m10 9 5 3-5 3z"/></svg><span>YouTube</span></button>
+  <button class="tab-btn" id="tabTiktok" role="tab" aria-selected="false" aria-controls="tiktokSection" data-tab="tiktokSection"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v11.2a4.2 4.2 0 1 1-4-4.2"/><path d="M14 3c.5 3.1 2.3 5 5.5 5.4"/></svg><span>TikTok</span></button>
+</nav>
+
+<section class="weather-card tab-panel" id="weatherSection" role="tabpanel" aria-labelledby="tabWeather" aria-label="Aktuální počasí">
+  <div class="weather-head"><div><div class="weather-label">Dnes venku</div><div class="city-line"><h2 id="cityName">Hořice</h2><button class="city-edit" id="editCity">✎ město</button></div></div><div class="weather-label" id="weatherDate"></div></div>
+  <div class="weather-main"><div><div class="temp" id="temperature">—°</div><div class="condition" id="condition">Načítám počasí…</div><div class="feels" id="feelsLike">Chvilku strpení ✨</div></div><div class="weather-art" id="weatherArt" aria-hidden="true"></div></div>
+  <div class="weather-details"><div class="weather-stat"><span>💧 Vlhkost</span><strong id="humidity">—</strong></div><div class="weather-stat"><span>💨 Vítr</span><strong id="wind">—</strong></div><div class="weather-stat"><span>🌡️ Pocitově</span><strong id="apparent">—</strong></div></div>
+  <div class="weather-bottom hidden" id="cityEditor"><input class="city-input" id="cityInput" placeholder="Zadej město…" aria-label="Název města"><button class="soft-btn" id="saveCity">Zobrazit</button></div>
+  <div class="status" id="weatherStatus" role="status">Počasí z Open-Meteo</div>
+</section>
+
+<section class="section tab-panel" id="youtubeSection" role="tabpanel" aria-labelledby="tabYoutube" hidden>
+  <div class="section-head"><div class="section-title"><div class="emoji"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="m10 9 5 3-5 3z"/></svg></div><div><h2>Můj YouTube feed</h2><p>Novinky od tvých oblíbených tvůrců</p></div></div><button class="add-btn" id="toggleYoutube" aria-label="Přidat YouTube kanál">+</button></div>
+  <div class="panel hidden" id="youtubeForm">
+    <div class="form-row"><input class="field" id="youtubeInput" placeholder="ID kanálu nebo URL" aria-label="YouTube ID kanálu nebo URL"></div>
+    <div class="form-row"><button class="soft-btn" id="addYoutube" style="width:100%">＋ Přidat kanál</button></div>
+    <p class="helper">Vlož URL kanálu nebo ID začínající UC… Aplikace načítá veřejný RSS feed přes CORS proxy; dostupnost proxy se může měnit.</p>
+  </div>
+  <div class="panel" style="margin-top:11px"><div class="video-list" id="videoList"><div class="empty"><div class="empty-icon">📺</div><strong>Tvůj feed čeká na první kanál</strong><p>Přidej oblíbeného YouTube tvůrce a jeho veřejná nejnovější videa se zobrazí tady.</p></div></div><div class="status" id="youtubeStatus" role="status"></div></div>
+</section>
+
+<section class="section tab-panel" id="tiktokSection" role="tabpanel" aria-labelledby="tabTiktok" hidden>
+  <div class="section-head"><div class="section-title"><div class="emoji"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v11.2a4.2 4.2 0 1 1-4-4.2"/><path d="M14 3c.5 3.1 2.3 5 5.5 5.4"/></svg></div><div><h2>TikTok VIP stěna</h2><p>Všichni tvoji tvůrci na jednom místě</p></div></div><button class="add-btn" id="toggleTiktok" aria-label="Přidat TikTok profil">+</button></div>
+  <div class="panel hidden" id="tiktokForm">
+    <div class="form-row"><input class="field" id="tiktokName" placeholder="Jméno tvůrce" aria-label="Jméno tvůrce"></div>
+    <div class="form-row"><input class="field" id="tiktokHandle" placeholder="@uživatelskéjméno nebo URL" aria-label="TikTok uživatelské jméno nebo URL"></div>
+    <div class="form-row"><button class="soft-btn" id="addTiktok" style="width:100%">＋ Přidat na VIP stěnu</button></div>
+    <p class="helper">Profil otevřeš přímo na TikToku. Fotky profilů se nenačítají automaticky — ikonka se vytvoří z iniciály a pastelových barev.</p>
+  </div>
+  <div class="creator-grid" id="creatorGrid"></div>
+  <div class="panel empty hidden" id="tiktokEmpty" style="margin-top:11px"><div class="empty-icon">💗</div><strong>Tvoje VIP stěna je zatím prázdná</strong><p>Přidej profily, které chceš mít vždycky po ruce.</p></div>
+</section>
+<div class="footer">Uložené kanály, profily a město zůstávají v tomto prohlížeči. ☁️<br>Počasí: Open-Meteo · YouTube RSS je závislé na dostupnosti veřejné proxy.</div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const STORE_KEY = 'vipFeedWeather.v1';
+const palette = ['linear-gradient(135deg,#d9b6ef,#a99ae0)','linear-gradient(135deg,#f4c6c8,#e7a6bd)','linear-gradient(135deg,#a9d8d1,#6cb6b1)','linear-gradient(135deg,#f5d39c,#e8a978)','linear-gradient(135deg,#b8d2f1,#879fd3)','linear-gradient(135deg,#c6d8ad,#8eb58b)','linear-gradient(135deg,#f0c3a8,#d98b86)'];
+let state = loadState();
+let toastTimer;
+let currentTheme = localStorage.getItem('vipFeedWeather.theme') === 'dark' ? 'dark' : 'light';
+function loadState(){try{const x=JSON.parse(localStorage.getItem(STORE_KEY)||'{}');return {city:typeof x.city==='string'?x.city:'Hořice',channels:Array.isArray(x.channels)?x.channels:[],creators:Array.isArray(x.creators)?x.creators:[]}}catch(e){return {city:'Hořice',channels:[],creators:[]}}}
+function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state))}catch(e){notify('Uložení se nezdařilo — prohlížeč může blokovat LocalStorage.')}}
+function applyTheme(theme){
+ currentTheme=theme;document.body.classList.toggle('dark-mode',theme==='dark');
+ try{localStorage.setItem('vipFeedWeather.theme',theme)}catch(e){}
+ const icon=$('themeIcon');
+ if(theme==='dark'){
+  icon.innerHTML='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/>';
+  $('themeToggle').title='Přepnout na světlý režim';
+ }else{
+  icon.innerHTML='<path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5 8.7 8.7 0 1 0 20.5 14.2Z"/>';
+  $('themeToggle').title='Přepnout na tmavý režim';
+ }
+}
+function activateTab(panelId){
+ document.querySelectorAll('.tab-btn').forEach(btn=>{
+  const active=btn.dataset.tab===panelId;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',String(active));btn.tabIndex=active?0:-1;
+ });
+ document.querySelectorAll('.tab-panel').forEach(panel=>panel.hidden=panel.id!==panelId);
+ try{localStorage.setItem('vipFeedWeather.activeTab',panelId)}catch(e){}
+}
+document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>activateTab(btn.dataset.tab)));
+$('themeToggle').addEventListener('click',()=>applyTheme(currentTheme==='dark'?'light':'dark'));
+function notify(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800)}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function safeURL(s){try{const u=new URL(s);return ['http:','https:'].includes(u.protocol)?u:null}catch(e){return null}}
+function parseChannel(raw){
+ raw=raw.trim(); if(!raw)return null;
+ if(/^UC[\w-]{20,}$/.test(raw))return {id:raw,label:raw};
+ const u=safeURL(raw.includes('://')?raw:'https://'+raw);if(!u)return null;
+ if(!/(^|\.)youtube\.com$/i.test(u.hostname)&&!/(^|\.)youtu\.be$/i.test(u.hostname))return null;
+ let m=u.pathname.match(/\/channel\/(UC[\w-]+)/);if(m)return {id:m[1],label:u.pathname.split('/').filter(Boolean).pop()||m[1]};
+ const handle=u.pathname.match(/\/@([^/]+)/);if(handle)return {handle:handle[1],label:'@'+handle[1]};
+ return null;
+}
+function renderCreators(){
+ const grid=$('creatorGrid');grid.innerHTML='';
+ $('tiktokEmpty').classList.toggle('hidden',state.creators.length>0);
+ state.creators.forEach((c,i)=>{
+  const card=document.createElement('article');card.className='creator';card.style.animationDelay=(i*35)+'ms';
+  const initials=(c.name.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('')||'♥').toUpperCase();
+  card.innerHTML=`<button class="remove-creator" data-remove="${escapeHTML(c.id)}" aria-label="Odebrat ${escapeHTML(c.name)}" title="Odebrat">×</button><div class="avatar" style="background:${palette[i%palette.length]}">${escapeHTML(initials)}</div><div class="creator-name" title="${escapeHTML(c.name)}">${escapeHTML(c.name)}</div><div class="creator-handle">${escapeHTML('@'+c.handle)}</div><a class="tiktok-go" href="https://www.tiktok.com/@${encodeURIComponent(c.handle)}" target="_blank" rel="noopener noreferrer"><span>♪</span> TikTok ↗</a>`;
+  grid.appendChild(card);
+ });
+}
+function addTikTok(){
+ const name=$('tiktokName').value.trim();let raw=$('tiktokHandle').value.trim();
+ if(!name||!raw){notify('Doplň jméno i uživatelské jméno.');return}
+ let handle=raw;
+ const u=safeURL(raw.includes('://')?raw:'https://'+raw);
+ if(u){if(!/(^|\.)tiktok\.com$/i.test(u.hostname)){notify('Vlož prosím platný profil TikToku.');return}const m=u.pathname.match(/\/@([^/?]+)/);if(!m){notify('V URL se nepodařilo najít uživatelské jméno.');return}handle=m[1]}
+ handle=handle.replace(/^@/,'').replace(/[/?#].*$/,'').trim();
+ if(!/^[A-Za-z0-9._]{2,24}$/.test(handle)){notify('Zkontroluj uživatelské jméno TikToku.');return}
+ if(state.creators.some(c=>c.handle.toLowerCase()===handle.toLowerCase())){notify('Tento profil už na stěně máš.');return}
+ state.creators.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name,handle});saveState();renderCreators();$('tiktokName').value='';$('tiktokHandle').value='';$('tiktokForm').classList.add('hidden');notify('Profil přidán na VIP stěnu ✨');
+}
+$('addTiktok').addEventListener('click',addTikTok);
+$('tiktokHandle').addEventListener('keydown',e=>{if(e.key==='Enter')addTikTok()});
+$('creatorGrid').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(!b)return;state.creators=state.creators.filter(c=>c.id!==b.dataset.remove);saveState();renderCreators();notify('Profil odebrán.')});
+$('toggleTiktok').addEventListener('click',()=>$('tiktokForm').classList.toggle('hidden'));
+$('toggleYoutube').addEventListener('click',()=>$('youtubeForm').classList.toggle('hidden'));
+
+async function addChannel(){
+ const parsed=parseChannel($('youtubeInput').value);if(!parsed){notify('Vlož platnou URL kanálu nebo ID kanálu UC…');return}
+ if(state.channels.some(c=>(c.id&&c.id===parsed.id)||(c.handle&&c.handle.toLowerCase()===String(parsed.handle||'').toLowerCase()))){notify('Tento kanál už máš přidaný.');return}
+ state.channels.push({...parsed,addedAt:Date.now()});saveState();$('youtubeInput').value='';$('youtubeForm').classList.add('hidden');renderVideoLoading();await refreshYoutube();
+}
+$('addYoutube').addEventListener('click',addChannel);
+$('youtubeInput').addEventListener('keydown',e=>{if(e.key==='Enter')addChannel()});
+function renderVideoLoading(){if(!state.channels.length){$('videoList').innerHTML='<div class="empty"><div class="empty-icon">📺</div><strong>Tvůj feed čeká na první kanál</strong><p>Přidej oblíbeného YouTube tvůrce a jeho veřejná nejnovější videa se zobrazí tady.</p></div>';return}$('videoList').innerHTML='<div class="empty"><div class="empty-icon">✨</div><strong>Hledám nejnovější videa…</strong><p>Načítám veřejné RSS kanály.</p></div>'}
+function parseXML(xml){
+ const doc=new DOMParser().parseFromString(xml,'text/xml');if(doc.querySelector('parsererror'))throw Error('RSS se nepodařilo přečíst');
+ return [...doc.querySelectorAll('entry')].map(e=>{
+  const get=t=>e.getElementsByTagNameNS('*',t)[0]?.textContent?.trim()||'';
+  const id=get('videoId')||((get('id').match(/video:([^:]+)/)||[])[1]||'');
+  const title=get('title')||'Video bez názvu',author=get('name')||'YouTube tvůrce',published=get('published');
+  return {id,title,author,published,href:id?'https://www.youtube.com/watch?v='+encodeURIComponent(id):get('link')};
+ }).filter(v=>v.href).slice(0,8);
+}
+async function fetchFeed(channel){
+ const feedURL=channel.id?'https://www.youtube.com/feeds/videos.xml?channel_id='+encodeURIComponent(channel.id):'https://www.youtube.com/feeds/videos.xml?user='+encodeURIComponent(channel.handle);
+ const proxies=[
+  'https://api.allorigins.win/raw?url='+encodeURIComponent(feedURL),
+  'https://corsproxy.io/?url='+encodeURIComponent(feedURL)
+ ];
+ let last;
+ for(const url of proxies){try{const res=await fetch(url,{signal:AbortSignal.timeout(10000),cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);const text=await res.text();if(!text.includes('<feed')&&!text.includes(':feed'))throw Error('Odpověď není RSS');return parseXML(text)}catch(e){last=e}}
+ throw last||Error('Feed není dostupný');
+}
+async function refreshYoutube(){
+ const status=$('youtubeStatus');if(!state.channels.length){renderVideoLoading();status.textContent='';return}
+ status.textContent='Aktualizuji veřejné RSS feedy…';
+ const results=await Promise.all(state.channels.map(async c=>{try{return {channel:c,items:await fetchFeed(c),error:null}}catch(e){return {channel:c,items:[],error:e}}}));
+ const all=results.flatMap(r=>r.items.map(v=>({...v,channelLabel:r.channel.label||r.channel.handle||r.channel.id}))).sort((a,b)=>new Date(b.published||0)-new Date(a.published||0)).slice(0,30);
+ const list=$('videoList');list.innerHTML='';
+ if(all.length){
+  all.forEach(v=>{
+   const card=document.createElement('article');card.className='video-card';
+   const thumb=v.id?'https://i.ytimg.com/vi/'+encodeURIComponent(v.id)+'/mqdefault.jpg':'';
+   card.innerHTML=`<a class="thumb-wrap" href="${escapeHTML(v.href)}" target="_blank" rel="noopener noreferrer" aria-label="Přehrát ${escapeHTML(v.title)}">${thumb?`<img src="${thumb}" alt="" loading="lazy" onerror="this.style.display='none'">`:''}<span class="play">▶</span></a><div><div class="video-title">${escapeHTML(v.title)}</div><div class="video-meta">${escapeHTML(v.author)}${v.published?' · '+escapeHTML(formatDate(v.published)):''}</div><div class="video-actions"><a class="tiny-link" href="${escapeHTML(v.href)}" target="_blank" rel="noopener noreferrer">Přehrát video ↗</a><button class="remove" data-channel="${escapeHTML(v.channelLabel)}">·</button></div></div>`;
+   list.appendChild(card);
+  });
+ }else{
+  list.innerHTML='<div class="empty"><div class="empty-icon">🫧</div><strong>Videa se teď nepodařilo načíst</strong><p>Proxy nebo RSS může být dočasně nedostupné. Zkus feed obnovit později, případně přidej přímo ID kanálu.</p></div>';
+ }
+ const failed=results.filter(r=>r.error).length;
+ status.textContent=failed?`${results.length-failed}/${results.length} kanálů načteno · ${failed} se nepodařilo načíst.`:`${results.length} kanálů · ${all.length} videí · aktualizováno právě teď`;
+}
+function formatDate(s){const d=new Date(s);return Number.isNaN(+d)?'':new Intl.DateTimeFormat('cs-CZ',{day:'numeric',month:'short'}).format(d)}
+$('videoList').addEventListener('click',e=>{const b=e.target.closest('[data-channel]');if(!b)return;const label=b.dataset.channel;const c=state.channels.find(x=>(x.label||x.handle||x.id)===label);if(c&&confirm('Odebrat tento kanál z YouTube feedu?')){state.channels=state.channels.filter(x=>x!==c);saveState();refreshYoutube()}});
+function renderChannelBadges(){/* feed cards jsou vykresleny až po úspěšném načtení */}
+const weatherCodes={0:['Jasno','sun','sun'],1:['Převážně jasno','partly','sun'],2:['Polojasno','partly','cloud'],3:['Zataženo','cloud','cloud'],45:['Mlha','fog','cloud'],48:['Námrazová mlha','fog','cloud'],51:['Slabé mrholení','rain','rain'],53:['Mrholení','rain','rain'],55:['Silné mrholení','rain','rain'],56:['Mrznoucí mrholení','rain','rain'],57:['Mrznoucí mrholení','rain','rain'],61:['Slabý déšť','rain','rain'],63:['Déšť','rain','rain'],65:['Silný déšť','rain','rain'],66:['Mrznoucí déšť','rain','rain'],67:['Silný mrznoucí déšť','rain','rain'],71:['Slabé sněžení','snow','snow'],73:['Sněžení','snow','snow'],75:['Silné sněžení','snow','snow'],77:['Sněhová zrna','snow','snow'],80:['Přeháňky','rain','rain'],81:['Přeháňky','rain','rain'],82:['Silné přeháňky','storm','rain'],85:['Sněhové přeháňky','snow','snow'],86:['Silné sněhové přeháňky','snow','snow'],95:['Bouřka','storm','rain'],96:['Bouřka s kroupami','storm','rain'],99:['Silná bouřka s kroupami','storm','rain']};
+function weatherSVG(kind){
+ const common='viewBox="0 0 100 100" width="86" height="86" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"';
+ const sun='<circle cx="35" cy="34" r="15" fill="#f7c96f" stroke="#e8ad58"/><path d="M35 8v7M35 53v7M9 34h7M54 34h7M17 16l5 5M48 47l5 5M53 16l-5 5M22 47l-5 5" stroke="#e8ad58"/>';
+ const cloud='<path d="M27 68h43a15 15 0 0 0 0-30 23 23 0 0 0-44-3 17 17 0 0 0 1 33Z" fill="#e8e7f6" stroke="#a7a4c9"/>';
+ if(kind==='sun')return `<svg ${common}>${sun}</svg>`;
+ if(kind==='partly')return `<svg ${common}>${sun}${cloud}</svg>`;
+ if(kind==='cloud')return `<svg ${common}>${cloud}</svg>`;
+ if(kind==='fog')return `<svg ${common}>${cloud}<path d="M18 78h60M28 87h44" stroke="#9ba9bf"/></svg>`;
+ if(kind==='snow')return `<svg ${common}>${cloud}<path d="M35 78v10m-4-6 8 4m0-4-8 4M60 78v10m-4-6 8 4m0-4-8 4" stroke="#7da6d4"/></svg>`;
+ if(kind==='storm')return `<svg ${common}>${cloud}<path d="m49 68-10 17h10l-5 11 19-21H52l7-7" fill="#f4c96b" stroke="#e3aa49"/></svg>`;
+ return `<svg ${common}>${cloud}<path d="m36 76-5 12m21-12-5 12m21-12-5 12" stroke="#78a7d7"/></svg>`;
+}
+function makeEffects(kind){
+ const box=$('weatherEffects');box.querySelectorAll('.drop,.flake').forEach(e=>e.remove());$('sunGlow').classList.toggle('hidden',kind!=='sun');
+ if(kind==='rain'){for(let i=0;i<35;i++){const d=document.createElement('i');d.className='drop';d.style.left=Math.random()*100+'%';d.style.animationDuration=(.7+Math.random()*1.1)+'s';d.style.animationDelay=(-Math.random()*2)+'s';d.style.opacity=(.2+Math.random()*.5);box.appendChild(d)}}
+ if(kind==='snow'){for(let i=0;i<26;i++){const f=document.createElement('i');f.className='flake';f.textContent=Math.random()>.45?'❄':'·';f.style.left=Math.random()*100+'%';f.style.fontSize=(9+Math.random()*14)+'px';f.style.animationDuration=(6+Math.random()*9)+'s';f.style.animationDelay=(-Math.random()*12)+'s';box.appendChild(f)}}
+}
+async function geocode(city){
+ const url='https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(city)+'&count=1&language=cs&format=json';
+ const res=await fetch(url,{signal:AbortSignal.timeout(12000)});if(!res.ok)throw Error('Geokódování není dostupné');const data=await res.json();if(!data.results?.length)throw Error('Město se nepodařilo najít');return data.results[0];
+}
+async function loadWeather(city){
+ $('weatherStatus').textContent='Načítám aktuální počasí…';
+ try{
+  const place=await geocode(city);const url=`https://api.open-meteo.com/v1/forecast?latitude=${place.latitude}&longitude=${place.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&timezone=auto`;
+  const res=await fetch(url,{signal:AbortSignal.timeout(12000)});if(!res.ok)throw Error('Počasí není dostupné');const data=await res.json();const c=data.current;if(!c)throw Error('Chybí aktuální data');
+  state.city=place.name+(place.admin1&&place.admin1!==place.name?', '+place.admin1:'');saveState();
+  $('cityName').textContent=state.city;$('temperature').textContent=Math.round(c.temperature_2m)+'°';
+  const desc=weatherCodes[c.weather_code]||['Proměnlivé počasí','partly','cloud'];$('condition').textContent=desc[0];$('weatherArt').innerHTML=weatherSVG(desc[1]);
+  $('humidity').textContent=Math.round(c.relative_humidity_2m)+'%';$('wind').textContent=Math.round(c.wind_speed_10m)+' km/h';$('apparent').textContent=Math.round(c.apparent_temperature)+'°';
+  $('feelsLike').textContent=c.is_day?'Přeji krásný den ✨':'Příjemný večer ✨';
+  document.body.classList.remove('weather-sun','weather-rain','weather-snow','weather-cloud');document.body.classList.add('weather-'+desc[2]);makeEffects(desc[2]);
+  $('weatherStatus').textContent='Aktualizováno '+new Intl.DateTimeFormat('cs-CZ',{hour:'2-digit',minute:'2-digit'}).format(new Date())+' · Open-Meteo';
+  $('weatherDate').textContent=new Intl.DateTimeFormat('cs-CZ',{weekday:'short',day:'numeric',month:'short'}).format(new Date());
+ }catch(e){$('weatherStatus').textContent=e.message==='Failed to fetch'?'Počasí se nepodařilo načíst. Zkontroluj připojení.':e.message;$('cityName').textContent=state.city}
+}
+$('editCity').addEventListener('click',()=>{$('cityEditor').classList.toggle('hidden');$('cityInput').value=state.city;$('cityInput').focus()});
+$('saveCity').addEventListener('click',async()=>{const city=$('cityInput').value.trim();if(!city){notify('Zadej název města.');return}await loadWeather(city);if(!$('weatherStatus').textContent.includes('nepodařilo')&&!$('weatherStatus').textContent.includes('nenašlo'))$('cityEditor').classList.add('hidden')});
+$('cityInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('saveCity').click()});
+$('refreshAll').addEventListener('click',async()=>{await Promise.all([loadWeather(state.city),refreshYoutube()]);notify('Obnovení dokončeno ✨')});
+applyTheme(currentTheme);
+const savedTab=localStorage.getItem('vipFeedWeather.activeTab');
+activateTab(['weatherSection','youtubeSection','tiktokSection'].includes(savedTab)?savedTab:'weatherSection');
+renderCreators();renderVideoLoading();loadWeather(state.city);refreshYoutube();
+setInterval(()=>{loadWeather(state.city);refreshYoutube()},15*60*1000);
+})();
+</script>
+</body>
+</html>
