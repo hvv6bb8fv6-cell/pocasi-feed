@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f7e8e6">
+<meta name="theme-color" content="#f7e8e6" id="appThemeColor">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Můj VIP Feed">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Můj VIP Feed & Počasí</title>
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23ffe4a7'/%3E%3Cstop offset='1' stop-color='%23efb9d0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='42' fill='url(%23g)'/%3E%3Ccircle cx='58' cy='56' r='22' fill='%23fff9df'/%3E%3Cpath d='M58 20v-8M58 92v-8M22 56h-8M102 56h-8M33 31l-6-6M83 81l-6-6M83 31l6-6M33 81l-6 6' stroke='%23fff9df' stroke-width='5' stroke-linecap='round'/%3E%3Crect x='35' y='88' width='110' height='67' rx='15' fill='%23fffaf7' stroke='%23b99cc7' stroke-width='5'/%3E%3Crect x='45' y='98' width='90' height='47' rx='8' fill='%23b5c8e8'/%3E%3Cpath d='M62 129c-10 0-12-15-2-19 4-13 24-11 27 1 12-4 20 6 16 14z' fill='%23fffaf7'/%3E%3Ccircle cx='119' cy='133' r='4' fill='%23f3a7b5'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <style>
 :root{--ink:#413d50;--muted:#858094;--card:rgba(255,255,255,.78);--line:rgba(91,77,116,.12);--accent:#9d87c5;--pink:#e8aebe;--shadow:0 14px 38px rgba(91,77,116,.10)}
-*{box-sizing:border-box}html{min-height:100%;background:#f7e8e6}body{margin:0;color:var(--ink);font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(145deg,#fff2e0 0%,#f8e5ed 52%,#e9e9fb 100%);min-height:100vh;overflow-x:hidden;transition:background 1.2s ease}
+*{box-sizing:border-box}html{min-height:100%;background:#f7e8e6}html.dark-page{background:#191b2a}body{margin:0;color:var(--ink);font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(145deg,#fff2e0 0%,#f8e5ed 52%,#e9e9fb 100%);min-height:100vh;overflow-x:hidden;transition:background 1.2s ease}
 body.weather-sun{background:linear-gradient(145deg,#fff0c9,#ffddb8 48%,#f5d7e6)}body.weather-rain{background:linear-gradient(145deg,#dce8f3,#cbd5e7 48%,#e4dff0)}body.weather-snow{background:linear-gradient(145deg,#eaf4fb,#dce8f3 52%,#eee5f4)}body.weather-cloud{background:linear-gradient(145deg,#f4e9ec,#e1e5f0 55%,#eee5f4)}
 button,input{font:inherit}button{cursor:pointer;border:0}button:focus-visible,input:focus-visible{outline:3px solid #aa95d5;outline-offset:2px}
 body.dark-mode{--ink:#f0edf7;--muted:#b4aec4;--card:rgba(38,35,54,.82);--line:rgba(226,215,246,.14);--accent:#b7a2e2;--pink:#d69db8;--shadow:0 14px 38px rgba(0,0,0,.20);background:linear-gradient(145deg,#191b2a 0%,#242136 52%,#29243a 100%)}
@@ -113,6 +113,9 @@ function loadState(){try{const x=JSON.parse(localStorage.getItem(STORE_KEY)||'{}
 function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state))}catch(e){notify('Uložení se nezdařilo — prohlížeč může blokovat LocalStorage.')}}
 function applyTheme(theme){
  currentTheme=theme;document.body.classList.toggle('dark-mode',theme==='dark');
+ document.documentElement.classList.toggle('dark-page',theme==='dark');
+ const themeMeta=document.querySelector('meta[name="theme-color"]');
+ if(themeMeta){themeMeta.remove();const freshMeta=document.createElement('meta');freshMeta.name='theme-color';freshMeta.content=theme==='dark'?'#191b2a':'#f7e8e6';freshMeta.id='appThemeColor';document.head.appendChild(freshMeta);}
  try{localStorage.setItem('vipFeedWeather.theme',theme)}catch(e){}
  const icon=$('themeIcon');
  if(theme==='dark'){
